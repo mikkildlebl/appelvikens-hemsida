@@ -1,0 +1,7 @@
+# Bara hemsidan versionshanteras – etiketter och utkast stannar lokalt
+/*
+!/index.html
+!/assets/
+!/.gitignore
+!/README.md
+.DS_Store
