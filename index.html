@@ -165,6 +165,16 @@
   .facts strong { display: block; font-size: 1.9rem; font-weight: 400; line-height: 1.1; }
   .facts .caps { color: var(--ink-soft); font-size: 0.64rem; }
 
+  /* Counter */
+  .counter { margin: clamp(3rem, 8vw, 5rem) 0 clamp(2.5rem, 6vw, 4rem); text-align: center; }
+  .counter-num {
+    margin: 0;
+    font-size: clamp(4.5rem, 16vw, 8.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .counter .caps { margin: 1rem 0 0; color: var(--ink-soft); }
+
   /* Contact */
   .contact {
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
@@ -236,6 +246,10 @@
         <div><strong>0</strong><span class="caps">Tillsatser</span></div>
         <div><strong>3 liter</strong><span class="caps">Per förpackning</span></div>
       </div>
+      <div class="counter">
+        <p class="counter-num"><span data-count-to="400">400</span>&nbsp;kg</p>
+        <p class="caps">äpplen räddade från att gå till spillo</p>
+      </div>
       <figure class="photo wide">
         <img src="assets/forpackning.jpg" alt="En kartong Äppelvikens äppelmust bredvid ett glas nypressad must på ett köksbord" width="1600" height="960" loading="lazy">
       </figure>
@@ -264,5 +278,25 @@
     Äppelvikens UF
     <em>Ett UF-företag inom Ung Företagsamhet</em>
   </footer>
+<script>
+  // Räknar upp siffran när den syns, utom vid reducerad rörelse
+  (function () {
+    var el = document.querySelector('[data-count-to]');
+    if (!el || !('IntersectionObserver' in window) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var target = +el.dataset.countTo, duration = 2000;
+    el.textContent = '0';
+    new IntersectionObserver(function (entries, obs) {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      var start = performance.now();
+      requestAnimationFrame(function tick(now) {
+        var t = Math.min((now - start) / duration, 1);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+        if (t < 1) requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.6 }).observe(el);
+  })();
+</script>
 </body>
 </html>
